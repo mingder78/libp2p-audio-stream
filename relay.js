@@ -10,41 +10,6 @@ import { tcp } from '@libp2p/tcp'
 import { circuitRelayServer } from '@libp2p/circuit-relay-v2'
 import { PUBSUB_PEER_DISCOVERY, PUBSUB_AUDIO } from './constants.js'
 import { WebRTC, WebSockets, WebSocketsSecure, WebTransport, Circuit, WebRTCDirect } from '@multiformats/multiaddr-matcher'
-import dotenv from 'dotenv';
-dotenv.config();
-
-async function updateGist(gistId, newContent, filename = 'text.txt') {
-  const token = process.env.YOUR_GITHUB_PERSONAL_ACCESS_TOKEN; // Replace with your token
-  const gist = {
-    description: 'Updated Gist via JS', // Optional: Update description
-    files: {
-      [filename]: {
-        content: newContent // New content for the file
-      }
-    }
-  };
-
-  try {
-    const response = await fetch(`https://api.github.com/gists/${gistId}`, {
-      method: 'PATCH',
-      headers: {
-        'Authorization': `token ${token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(gist)
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      console.log('Gist updated:', data.html_url);
-      return data.html_url;
-    } else {
-      console.error('Error updating gist:', response.status);
-    }
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
 
 async function main() {
   // enable('*')
@@ -78,11 +43,6 @@ async function main() {
 
   console.log('PeerID: ', node.peerId.toString())
   console.log('Multiaddrs: ', node.getMultiaddrs())
-
-const newContent = node.getMultiaddrs()[0].toString()
-const gistId = 'ee220400038070276eaf3d33680e0e0a'; // Replace with your Gist ID
-updateGist(gistId, newContent);
-
 
    node.services.pubsub.addEventListener('message', (evt) => {
   //   console.log('Received audio chunk from', evt.detail)
