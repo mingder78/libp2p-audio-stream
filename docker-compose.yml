@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  treehole-relay:
+    build: .
+    ports:
+      - "3000:3000"  # Health check
+      - "9001:9001"  # TCP
+      - "9002:9002"  # WebSocket
+    environment:
+      - NODE_ENV=production
+      - PORT=9001
+      - WS_PORT=9002
+      - HEALTH_PORT=3000
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  treehole-web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    ports:
+      - "5173:5173"
+    depends_on:
+      - treehole-relay
+    environment:
+      - NODE_ENV=development

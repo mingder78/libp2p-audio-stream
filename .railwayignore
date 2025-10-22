@@ -1,0 +1,33 @@
+# Development files
+.env.local
+.env.development
+*.log
+logs/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build artifacts (not needed for relay)
+dist/
+build/
+.vite/
+
+# Documentation (not needed for runtime)
+*.md
+docs/
+
+# Test files
+test/
+tests/
+*.test.js
+*.spec.js
+
+# Development dependencies
+node_modules/.cache/

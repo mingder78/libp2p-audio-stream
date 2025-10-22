@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Treehole - P2P Audio Streaming</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" defer src="./home.js"></script>
+  </head>
+  <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+      <!-- Header -->
+      <header class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-indigo-800 mb-2">🌳 Treehole</h1>
+        <p class="text-gray-600">Decentralized P2P Audio Streaming</p>
+      </header>
+
+      <!-- Status Cards -->
+      <div class="grid md:grid-cols-3 gap-4 mb-8">
+        <div class="bg-white rounded-lg shadow-md p-4">
+          <h3 class="font-semibold text-gray-800 mb-2">Connection Status</h3>
+          <div class="flex items-center">
+            <div id="status-indicator" class="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
+            <span id="connection-status" class="text-sm">Connecting...</span>
+          </div>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-4">
+          <h3 class="font-semibold text-gray-800 mb-2">Connected Peers</h3>
+          <span id="peer-count" class="text-2xl font-bold text-indigo-600">0</span>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-4">
+          <h3 class="font-semibold text-gray-800 mb-2">Audio Subscribers</h3>
+          <span id="subscriber-count" class="text-2xl font-bold text-green-600">0</span>
+        </div>
+      </div>
+
+      <!-- Main Controls -->
+      <div class="grid md:grid-cols-2 gap-8 mb-8">
+        <!-- Streaming Section -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+          <h2 class="text-2xl font-bold text-gray-800 mb-4">🎙️ Stream Audio</h2>
+          <div class="space-y-4">
+            <div class="flex items-center space-x-4">
+              <button 
+                id="startStream" 
+                class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors disabled:bg-gray-400"
+              >
+                Start Streaming
+              </button>
+              <button 
+                id="stopStream" 
+                class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors hidden"
+              >
+                Stop Streaming
+              </button>
+            </div>
+            <div id="streaming-status" class="text-sm text-gray-600"></div>
+            <div class="bg-gray-50 rounded p-3">
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-gray-600">Audio Quality:</span>
+                <select id="audio-quality" class="text-sm border rounded px-2 py-1">
+                  <option value="32000">Low (32kbps)</option>
+                  <option value="64000" selected>Medium (64kbps)</option>
+                  <option value="128000">High (128kbps)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Receiving Section -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+          <h2 class="text-2xl font-bold text-gray-800 mb-4">🎧 Receive Audio</h2>
+          <div class="space-y-4">
+            <audio 
+              id="audioPlayer" 
+              controls 
+              autoplay 
+              class="w-full"
+              style="height: 54px;"
+            >
+              Your browser does not support audio playback.
+            </audio>
+            <div id="receiving-status" class="text-sm text-gray-600">Ready to receive audio...</div>
+            <div class="bg-gray-50 rounded p-3">
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-gray-600">Volume:</span>
+                <input 
+                  id="volume-control" 
+                  type="range" 
+                  min="0" 
+                  max="100" 
+                  value="80" 
+                  class="flex-1 ml-3"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Network Info -->
+      <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">🌐 Network Information</h2>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div>
+            <h3 class="font-semibold text-gray-700 mb-2">Node Details</h3>
+            <div class="space-y-2 text-sm">
+              <div>
+                <span class="text-gray-600">Peer ID:</span>
+                <code id="node-peer-id" class="ml-2 text-xs bg-gray-100 px-2 py-1 rounded">Loading...</code>
+              </div>
+              <div>
+                <span class="text-gray-600">Addresses:</span>
+                <span id="address-count" class="ml-2 font-semibold">0</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-700 mb-2">Connection Types</h3>
+            <div id="peer-types" class="text-sm space-y-1"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Manual Connection -->
+      <div class="bg-white rounded-lg shadow-lg p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">🔗 Manual Connection</h2>
+        <div class="flex space-x-2">
+          <input
+            id="manual-multiaddr"
+            type="text"
+            placeholder="/ip4/..."
+            class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          <button
+            id="connect-button"
+            class="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
+          >
+            Connect
+          </button>
+        </div>
+        <div id="connection-result" class="mt-2 text-sm"></div>
+      </div>
+
+      <!-- Debug Section (Collapsible) -->
+      <div class="mt-8">
+        <button 
+          id="toggle-debug" 
+          class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm"
+        >
+          Toggle Debug Info
+        </button>
+        <div id="debug-section" class="hidden mt-4 bg-gray-900 text-green-400 rounded-lg p-4">
+          <div class="flex space-x-2 mb-4">
+            <button id="enable-logging" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm">
+              Enable Logging
+            </button>
+            <button id="disable-logging" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">
+              Disable Logging
+            </button>
+          </div>
+          <pre id="debug-output" class="text-xs overflow-auto max-h-64">Debug information will appear here...</pre>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

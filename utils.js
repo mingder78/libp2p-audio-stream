@@ -135,10 +135,18 @@ export function update(element, newContent) {
 }
 
 export async function createNewLibp2p() {
-
-const relayAddr = await getRawGistFile(GIST_RELAY_MULTIADDR)
-
-console.log("relay multiaddr:", relayAddr);
+  let relayAddr;
+  
+  try {
+    // Try to get relay address from Gist (public cloud relay)
+    relayAddr = await getRawGistFile(GIST_RELAY_MULTIADDR);
+    console.log("🌐 Using public cloud relay:", relayAddr);
+  } catch (error) {
+    console.warn("⚠️ Failed to fetch public relay, using fallback:", error.message);
+    // Fallback to local relay
+    relayAddr = RELAY_MULTIADDR;
+    console.log("🏠 Using local relay:", relayAddr);
+  }
   const libp2p = await createLibp2p({
     addresses: {
       listen: [
