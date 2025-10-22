@@ -181,7 +181,7 @@ console.log("relay multiaddr:", relayAddr);
     peerDiscovery: [
       bootstrap({
         // add your relay multiaddr here ! and rerun this client code
-        list: [relayAddr],
+        list: [RELAY_MULTIADDR, relayAddr ],
       }),
       pubsubPeerDiscovery({
         interval: 10_000,

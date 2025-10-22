@@ -10,5 +10,5 @@ export const bootstrapPeers = [
 
 export const PUBSUB_PEER_DISCOVERY = 'browser-peer-discovery'
 export const PUBSUB_AUDIO = 'audio-treehole'
-export const RELAY_MULTIADDR = '/ip4/127.0.0.1/tcp/9001/ws/p2p/12D3KooWQ8R5zyoEj16V92kVcLgMt1zgAXL9VSgngRJvAwU6W1HE'
+export const RELAY_MULTIADDR = '/dns4/a2de07058692.ngrok-free.app/tcp/443/wss/p2p/12D3KooWDBp7EgrGqGyxmqKuLYPnUaXE1FVBSqCd4tj6Tj8gQMEU'
 export const GIST_RELAY_MULTIADDR = 'https://gist.github.com/mingder78/ee220400038070276eaf3d33680e0e0a'
